@@ -30,3 +30,21 @@ sudo ollama pull deepseek-r1:8b
 ## Start server
 npm start
 ```
+
+## Usage
+
+Start ollama server and Contextual DeepSeek API and test:
+
+```bash
+nohup ollama serve &
+npm start
+```
+
+Test Contextual DeepSeek API:
+
+```bash
+curl -X POST http://localhost:3000/ask \
+-H "Content-Type: application/json" \
+-d '{"query": "Dame la receta de arepas de reina pepiada"}'
+
+```
