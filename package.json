@@ -1,0 +1,18 @@
+{
+  "name": "contextual-deepseek-api",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.21.2",
+    "ollama": "0.5.12"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "description": "API with DeepSeek AI that answers everything you need to know in Spanish to make Venezuelan Reina Pepiada arepas."
+}
