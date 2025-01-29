@@ -1,8 +1,8 @@
-# Contextual DeepSeek API
+# Contextual DeepSeek Node.js API
 
 ## Description
 
-`contextual-deepseek-api` is an API powered by DeepSeek AI and Ollama. It responds to queries in Spanish based on a context file, providing answers specifically tailored to the contents of that file. In this case, it answers questions related to making Venezuelan Reina Pepiada arepas.
+`contextual-deepseek-nodejs-api` is an API powered by DeepSeek AI and Ollama. It responds to queries in Spanish based on a context file, providing answers specifically tailored to the contents of that file. In this case, it answers questions related to making Venezuelan Reina Pepiada arepas.
 
 ## Features
 
