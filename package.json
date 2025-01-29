@@ -1,5 +1,5 @@
 {
-  "name": "contextual-deepseek-api",
+  "name": "contextual-deepseek-nodejs-api",
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
