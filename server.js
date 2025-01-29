@@ -7,6 +7,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 const filePath = process.env.DATA_FILE_PATH || 'arepas_reina_pepiada.spanish.txt';
 
+// Function to get current time
+const getTime = () => new Date().toISOString();
 
 // Extract topic and language from file name
 const extractTopicAndLanguage = (fileName) => {
@@ -35,7 +37,7 @@ const readFileData = async () => {
   try {
     return await fs.readFile(filePath, 'utf8');
   } catch (err) {
-    console.error('Error reading the file:', err);
+    console.error(`${getTime()} - SERVER - Error reading the file:`, err);
     return null;
   }
 };
@@ -49,8 +51,17 @@ const constructQuery = (data, userInput) => {
   return `Directives: Be as brief and concise as possible, language only ${CONFIG.language}. Data:${data}. Query:${userInput}.`;
 };
 
-// Endpoint to handle requests
+// Middleware to log requests
+app.use((req, res, next) => {
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  console.log(`${getTime()} - ${clientIp} - Request: ${req.method} ${req.url}`);
+  next();
+});
+
 app.post('/ask', async (req, res) => {
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  console.log(`${getTime()} - ${clientIp} - Processing /ask request`);
+
   const userInput = req.body.query || 'Hello';
   const data = await readFileData();
 
@@ -59,45 +70,43 @@ app.post('/ask', async (req, res) => {
   }
 
   try {
-    // Step 1: Validate if the query is about the specified topic
+    console.log(`${getTime()} - ${clientIp} - Validating input`);
     const validationResponse = await ollama.chat({
       model: 'deepseek-r1:8b',
-      messages: [
-        { role: 'user', content: constructValidationQuery(userInput) }
-      ]
+      messages: [{ role: 'user', content: constructValidationQuery(userInput) }]
     });
 
     const isRelated = validationResponse?.message?.content.trim().split('\n').pop().toLowerCase() === 'yes';
 
     if (!isRelated) {
-      return res.json({
-        response: `This API only responds to questions about ${TOPIC}.`
-      });
+      console.log(`${getTime()} - ${clientIp} - Query not related to ${CONFIG.topic}`);
+      return res.json({ response: `This API only responds to questions about ${CONFIG.topic}.` });
     }
 
-    // Step 2: If related, forward the actual query
+    console.log(`${getTime()} - ${clientIp} - Generating response`);
     const mainResponse = await ollama.chat({
       model: 'deepseek-r1:8b',
-      messages: [
-        { role: 'user', content: constructQuery(data, userInput) }
-      ]
+      messages: [{ role: 'user', content: constructQuery(data, userInput) }]
     });
 
     const cleanResponse = mainResponse?.message?.content
       ? mainResponse.message.content.replace(/<think>[^]*?<\/think>/g, '').trim()
       : 'No response received.';
 
+    console.log(`${getTime()} - ${clientIp} - Response sent`);
     res.json({ response: cleanResponse });
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error(`${getTime()} - ${clientIp} - Error processing request:`, error);
     res.status(500).json({ error: 'Failed to process the request.' });
   }
 });
 
 // Root endpoint to describe the API
 app.get('/', (req, res) => {
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  console.log(`${getTime()} - ${clientIp} - Request: /`);
   res.json({
-    message: `Welcome to the DeepSeek AI API! This API provides answers in ${LANGUAGE} about ${TOPIC}.`,
+    message: `Welcome to the DeepSeek AI API! This API provides answers in ${CONFIG.language} about ${CONFIG.topic}.`,
     usage: {
       endpoint: "/ask",
       method: "POST",
@@ -114,7 +123,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// Start the server
 app.listen(port, () => {
-  console.log(`API server running at http://localhost:${port}`);
+  console.log(`${getTime()} - SERVER - API server running at http://localhost:${port}`);
 });
