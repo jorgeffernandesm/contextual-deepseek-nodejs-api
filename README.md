@@ -1,3 +1,8 @@
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate/?hosted_button_id=Q6ZB8NDZXTDTS)
+<a href="https://www.paypal.com/donate/?hosted_button_id=Q6ZB8NDZXTDTS" target="_blank">
+  <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" height="20" alt="Donate with PayPal">
+</a>
+
 # Contextual DeepSeek Node.js API
 
 ## Description
@@ -43,8 +48,17 @@ npm start
 Test Contextual DeepSeek API:
 
 ```bash
+curl -X GET http://localhost:3000/ -H "X-Forwarded-For: 127.0.0.1"
+
 curl -X POST http://localhost:3000/ask \
+-H "X-Forwarded-For: 127.0.0.1" \
 -H "Content-Type: application/json" \
 -d '{"query": "Dame la receta de arepas de reina pepiada"}'
 
 ```
+<img src="https://omicronyx.com/images/jorgeLogo.png" width="20"/> Jorge Fernandes
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate/?hosted_button_id=Q6ZB8NDZXTDTS)
+<a href="https://www.paypal.com/donate/?hosted_button_id=Q6ZB8NDZXTDTS" target="_blank">
+  <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" height="20" alt="Donate with PayPal">
+</a>
